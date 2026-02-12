@@ -1,0 +1,16 @@
+<svg width="200" height="200" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background Circle -->
+  <circle cx="100" cy="100" r="90" fill="#0F172A"/>
+
+  <!-- Code Brackets -->
+  <path d="M70 60 L45 100 L70 140" stroke="#38BDF8" stroke-width="8" fill="none" stroke-linecap="round"/>
+  <path d="M130 60 L155 100 L130 140" stroke="#38BDF8" stroke-width="8" fill="none" stroke-linecap="round"/>
+
+  <!-- Slash -->
+  <line x1="95" y1="55" x2="105" y2="145" stroke="#22C55E" stroke-width="8" stroke-linecap="round"/>
+
+  <!-- Name Initial -->
+  <text x="100" y="185" text-anchor="middle" fill="#E5E7EB" font-size="18" font-family="monospace">
+    Arjun Kanani
+  </text>
+</svg>
