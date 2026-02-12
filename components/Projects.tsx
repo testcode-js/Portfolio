@@ -62,7 +62,7 @@ const projects = [
     fallbackImage: '/projects/portfolio.jpg',
     tags: ['Next.js', 'TailwindCSS', 'Dropbox', 'Framer-motion'],
     github: 'https://github.com/testcode-js/portfolio',
-    live: 'https://portfolio-ruby-psi-frxabg1snv.vercel.app/',
+    live: 'https://portfolio-inky-three-48.vercel.app/',
     featured: false,
   },
 ];
