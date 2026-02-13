@@ -1,10 +1,11 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { HiExternalLink, HiCode } from 'react-icons/hi';
 import { FaGithub } from 'react-icons/fa';
 import { fadeInUp, fadeInDown, staggerContainer, staggerItem, scaleIn } from './helper/animations';
+import { imageCache } from './helper/imageCache';
 
 // Convert Dropbox sharing link to direct image URL
 const getDropboxDirectUrl = (url: string) => {
@@ -70,6 +71,46 @@ const projects = [
 const Projects = () => {
   const [filter, setFilter] = useState('all');
   const [imgErrors, setImgErrors] = useState<Record<string, boolean>>({});
+  const [cachedImages, setCachedImages] = useState<Record<string, string>>({});
+
+  // Preload images when component mounts or filter changes
+  useEffect(() => {
+    // Only run on client-side to avoid hydration issues
+    if (typeof window === 'undefined') return;
+
+    const preloadImages = async () => {
+      const projectImages = projects
+        .filter(p => filter === 'all' || (filter === 'featured' && p.featured))
+        .map(p => p.image)
+        .filter(Boolean);
+
+      console.log(`🚀 Preloading ${projectImages.length} images for filter: ${filter}`);
+      
+      try {
+        await imageCache.preloadImages(projectImages);
+        
+        // Debug cache status
+        imageCache.debugCache();
+        
+        // Update cached images state
+        const newCachedImages: Record<string, string> = {};
+        for (const url of projectImages) {
+          const cachedUrl = await imageCache.getImage(url);
+          newCachedImages[url] = cachedUrl;
+        }
+        setCachedImages(prev => ({ ...prev, ...newCachedImages }));
+        
+        console.log('✅ Image preloading completed');
+      } catch (error) {
+        console.error('❌ Error preloading images:', error);
+      }
+    };
+
+    // Small delay to ensure component is mounted
+    const timer = setTimeout(preloadImages, 100);
+    
+    return () => clearTimeout(timer);
+  }, [filter]);
 
   const handleImageError = (projectTitle: string) => {
     setImgErrors(prev => ({ ...prev, [projectTitle]: true }));
@@ -136,6 +177,19 @@ const Projects = () => {
               {tab.charAt(0).toUpperCase() + tab.slice(1)}
             </motion.button>
           ))}
+          
+          {/* Debug Cache Button */}
+          <motion.button
+            onClick={() => {
+              console.log('🔍 Manual cache debug:');
+              imageCache.debugCache();
+            }}
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            className="px-4 py-2 rounded-full font-medium transition-all duration-300 glass text-[var(--text-muted)] hover:text-[var(--text)] text-xs"
+          >
+            Debug Cache
+          </motion.button>
         </motion.div>
 
         {/* Projects Grid */}
@@ -159,7 +213,7 @@ const Projects = () => {
                 <div className="relative h-48 overflow-hidden bg-[var(--darker)]">
                   {(project.image && !imgErrors[project.title]) ? (
                     <motion.img
-                      src={project.image}
+                      src={cachedImages[project.image] || project.image}
                       alt={project.title}
                       className="w-full h-full object-cover"
                       initial={{ scale: 1.1 }}
