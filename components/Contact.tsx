@@ -6,6 +6,8 @@ import { HiMail, HiPhone, HiLocationMarker, HiPaperAirplane, HiCloudUpload, HiX 
 import { FaGithub, FaLinkedin } from 'react-icons/fa';
 import { fadeInUp, fadeInLeft, fadeInRight, staggerContainer, staggerItem, scaleIn } from './helper/animations';
 
+const MAX_FILE_SIZE = 10 * 1024 * 1024; // 25MB in bytes
+
 const contactInfo = [
   {
     icon: HiMail,
@@ -29,7 +31,7 @@ const contactInfo = [
 
 const socialLinks = [
   { icon: FaGithub, href: 'https://github.com/kananiarjun', label: 'GitHub' },
-  { icon: FaLinkedin, href: 'https://www.linkedin.com/in/arjun-kanani-190778262/', label: 'LinkedIn' },
+  { icon: FaLinkedin, href: 'https://www.linkedin.com/in/arjun--kanani/', label: 'LinkedIn' },
   
 ];
 
@@ -44,6 +46,7 @@ const Contact = () => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle');
+  const [fileError, setFileError] = useState<string | null>(null);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -93,7 +96,25 @@ const Contact = () => {
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
       const filesArray = Array.from(e.target.files);
-      setSelectedFiles((prev) => [...prev, ...filesArray]);
+      const validFiles: File[] = [];
+      const oversizedFiles: string[] = [];
+
+      filesArray.forEach((file) => {
+        if (file.size > MAX_FILE_SIZE) {
+          oversizedFiles.push(file.name);
+        } else {
+          validFiles.push(file);
+        }
+      });
+
+      if (oversizedFiles.length > 0) {
+        setFileError(`File(s) exceed 25MB limit: ${oversizedFiles.join(', ')}`);
+        setTimeout(() => setFileError(null), 5000);
+      }
+
+      if (validFiles.length > 0) {
+        setSelectedFiles((prev) => [...prev, ...validFiles]);
+      }
     }
   };
 
@@ -105,7 +126,25 @@ const Contact = () => {
     e.preventDefault();
     if (e.dataTransfer.files) {
       const filesArray = Array.from(e.dataTransfer.files);
-      setSelectedFiles((prev) => [...prev, ...filesArray]);
+      const validFiles: File[] = [];
+      const oversizedFiles: string[] = [];
+
+      filesArray.forEach((file) => {
+        if (file.size > MAX_FILE_SIZE) {
+          oversizedFiles.push(file.name);
+        } else {
+          validFiles.push(file);
+        }
+      });
+
+      if (oversizedFiles.length > 0) {
+        setFileError(`File(s) exceed 25MB limit: ${oversizedFiles.join(', ')}`);
+        setTimeout(() => setFileError(null), 5000);
+      }
+
+      if (validFiles.length > 0) {
+        setSelectedFiles((prev) => [...prev, ...validFiles]);
+      }
     }
   };
 
@@ -319,11 +358,20 @@ const Contact = () => {
                     Click to upload or drag & drop files here
                   </p>
                   <p className="text-xs text-[var(--text-muted)] mt-1">
-                    Images, PDFs, Documents (Max 10MB each)
+                    Images, PDFs, Documents (Max 25MB each)
                   </p>
                 </div>
 
                 {/* Selected Files */}
+                {fileError && (
+                  <motion.p
+                    initial={{ opacity: 0, y: -10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="mt-2 text-sm text-red-400"
+                  >
+                    {fileError}
+                  </motion.p>
+                )}
                 {selectedFiles.length > 0 && (
                   <div className="mt-3 space-y-2">
                     {selectedFiles.map((file, index) => (

@@ -136,7 +136,7 @@ const Hero = () => {
             {[FaGithub, FaLinkedin].map((Icon, index) => (
               <motion.a
                 key={index}
-                href={['https://github.com/kananiarjun', 'https://www.linkedin.com/in/arjun-kanani-190778262'][index]}
+                href={['https://github.com/kananiarjun', 'https://www.linkedin.com/in/arjun--kanani/'][index]}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="w-12 h-12 rounded-xl glass flex items-center justify-center text-[var(--text-muted)] hover:text-[var(--text)] hover:border-[var(--primary)] transition-all duration-300"
