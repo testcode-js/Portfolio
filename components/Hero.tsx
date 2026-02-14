@@ -155,10 +155,10 @@ const Hero = () => {
             className="mt-16 grid grid-cols-2 md:grid-cols-4 gap-8 max-w-3xl mx-auto"
           >
             {[
-              { value: '3+', label: 'Months Experience' },
-              { value: '5+', label: 'Projects Completed' },
-              { value: '3+', label: 'Happy Clients' },
-              { value: '100%', label: 'Satisfaction' },
+              { value: '10+', label: 'Technologies Learned' },
+              { value: '8+', label: 'Projects Built' },
+              { value: '300+', label: 'Hours of Coding' },
+              { value: '100%', label: 'Dedication' },
             ].map((stat, index) => (
               <motion.div
                 key={index}
