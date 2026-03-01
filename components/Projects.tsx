@@ -66,6 +66,16 @@ const projects = [
     live: 'https://portfolio-inky-three-48.vercel.app/',
     featured: false,
   },
+    {
+    title: 'Notify-Hub',
+    description: 'A notification hub application for managing and displaying notifications in real-time.',
+    image: getDropboxDirectUrl(process.env.NEXT_PUBLIC_DROPBOX_NOTIFYHUB || ''),
+    fallbackImage: '/projects/notifyhub.jpg',
+    tags: ['Next.js', 'TypeScript', 'TailwindCSS', 'MongoDB'],
+    github: 'https://github.com/kananiarjun/notify-hub',
+    live: 'https://notify-hub-ochre.vercel.app/',
+    featured: false,
+  },
 ];
 
 const Projects = () => {
